@@ -1,22 +1,27 @@
-!/usr/bin/env bash
+#!/usr/bin/env bash
 
-function guess(){
-    true_ans=$(ls -l |grep "^-"|wc -l)
-    while true;
+function guess_file_count {
+
+    correct_guess=0
+    while [[ $correct_guess -eq 0 ]]
     do
-        echo "pleas enter your guess"
-        read  number
-        if [ $number -lt $true_ans ]
+        echo "Enter your guess for number of files in current directory: "
+        read guess
+        if [[ $guess =~ ^\s*$ || $guess =~ [^0-9]+ ]]
         then
-            echo "your guess is Less then the true number"
-        elif [ $number -gt $true_ans ]
+            echo "Your guess should be a number"
+        elif [[ $guess -gt $1 ]]
         then
-            echo "your guess is Greater then the true number"
+            echo "Your guess is too high"
+        elif [[ $guess -lt $1 ]]
+        then
+            echo "Your guess is too low"
         else
-            echo " congratulation,you are right!"
-        break;
+            echo "Congrats!!! You guessed correctly."
+            let correct_guess=1
         fi
     done
 }
-echo "guess the files number in the current directory!"
-guess
+
+file_count=$(ls -1A | wc -l)
+guess_file_count file_count
